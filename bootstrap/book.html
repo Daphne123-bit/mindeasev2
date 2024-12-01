@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Martel+Sans:wght@200;300;400;600;700;800;900&family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>MindEase</title>
+    <link rel="stylesheet" href="book.css">
+</head>
+<body>
+    <header class="header">
+        <a href="already.html" class="logo">MindEase</a>
+        <nav class="navbar">
+            <button><a href="profilepage.html"><i class="fa-solid fa-user"></i></a></button>
+          </nav>
+    </header>
+<body>
+    <div class="booking-container">
+        <h2>Book a Session</h2>
+        <form action="#" method="POST">
+            <label for="therapist">Choose Therapist:</label>
+            <select id="therapist" name="therapist" required>
+                <option value="" disabled selected>Select a therapist</option>
+                <option value="therapist1">Dr. Lina Manuel (Anger Problems)</option>
+                <option value="therapist2">Dr. Michelle Chand (Anxiety)</option>
+                <option value="therapist3">Dr. Anthony Nuttall (Depression)
+                <option value="therapist3">Dr. Marina Ziff (Self HAmrn)
+                <option value="therapist3">Dr. Jake Freedman (Stress)
+                <option value="therapist3">Dr. Ann Marie Elwir (Trauma)
+                <option value="therapist3">Dr. Sue Aspinall (Panic Attack)
+                <option value="therapist3">Dr. Kevin Scott (Eating Disorder)
+                </option>
+            </select>
+        
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+        
+            <label for="preferred-session">Preferred Session:</label>
+            <select id="preferred-session" name="preferred-session" required>
+                <option value="" disabled selected>Select session</option>
+                <option value="morning">Morning session (8am-12pm)</option>
+                <option value="afternoon">Afternoon session (1pm-5pm)</option>
+            </select>
+        
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" placeholder="Full Name" required>
+        
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Email Address" required>
+        
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" placeholder="Phone Number" required>
+        
+            <button type="submit" class="submit-btn">Book Now</button>
+        </form>
+        
+    </div>
+</body>
+</html>
