@@ -9,30 +9,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>MindEase</title>
     <link rel="stylesheet" href="book.css">
+    <link rel="stylesheet" href="z.css">
 </head>
 <body>
     <header class="header">
         <a href="already.html" class="logo">MindEase</a>
         <nav class="navbar">
             <button><a href="profilepage.html"><i class="fa-solid fa-user"></i></a></button>
-          </nav>
+        </nav>
     </header>
-<body>
+
     <div class="booking-container">
         <h2>Book a Session</h2>
-        <form action="#" method="POST">
+        <form id="bookingForm">
             <label for="therapist">Choose Therapist:</label>
             <select id="therapist" name="therapist" required>
                 <option value="" disabled selected>Select a therapist</option>
-                <option value="therapist1">Dr. Lina Manuel (Anger Problems)</option>
-                <option value="therapist2">Dr. Michelle Chand (Anxiety)</option>
-                <option value="therapist3">Dr. Anthony Nuttall (Depression)
-                <option value="therapist3">Dr. Marina Ziff (Self HAmrn)
-                <option value="therapist3">Dr. Jake Freedman (Stress)
-                <option value="therapist3">Dr. Ann Marie Elwir (Trauma)
-                <option value="therapist3">Dr. Sue Aspinall (Panic Attack)
-                <option value="therapist3">Dr. Kevin Scott (Eating Disorder)
-                </option>
+                <option value="Dr. Lina Manuel">Dr. Lina Manuel (Anger Problems)</option>
+                <option value="Dr. Michelle Chand">Dr. Michelle Chand (Anxiety)</option>
+                <option value="Dr. Anthony Nuttall">Dr. Anthony Nuttall (Depression)</option>
+                <option value="Dr. Marina Ziff">Dr. Marina Ziff (Self Harm)</option>
+                <option value="Dr. Jake Freedman">Dr. Jake Freedman (Stress)</option>
+                <option value="Dr. Ann Marie Elwir">Dr. Ann Marie Elwir (Trauma)</option>
+                <option value="Dr. Sue Aspinall">Dr. Sue Aspinall (Panic Attack)</option>
+                <option value="Dr. Kevin Scott">Dr. Kevin Scott (Eating Disorder)</option>
             </select>
         
             <label for="date">Date:</label>
@@ -41,8 +41,8 @@
             <label for="preferred-session">Preferred Session:</label>
             <select id="preferred-session" name="preferred-session" required>
                 <option value="" disabled selected>Select session</option>
-                <option value="morning">Morning session (8am-12pm)</option>
-                <option value="afternoon">Afternoon session (1pm-5pm)</option>
+                <option value="MORNING SESSION">Morning session (8am-12pm)</option>
+                <option value="AFTERNOON SESSION">Afternoon session (1pm-5pm)</option>
             </select>
         
             <label for="name">Your Name:</label>
@@ -56,7 +56,109 @@
         
             <button type="submit" class="submit-btn">Book Now</button>
         </form>
-        
     </div>
+
+    <!-- Modal for upcoming appointment warning -->
+    <div class="modal-container">
+        <span class="modal-overlay"></span>
+
+        <div class="modal-content">
+            <i class="fa-regular fa-circle-check"></i>
+            <h2>Warning!</h2>
+            <h3>Upcoming appointment detected. Do you still want to continue?</h3>
+
+            <div class="buttons">
+                <button class="modal-button close-btn">No</button>
+                <button class="modal-button" id="confirmBooking">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Handle booking form submission
+            $('#bookingForm').on('submit', function (e) {
+                e.preventDefault(); // Prevent default form submission
+
+                const clientId = localStorage.getItem('clientId'); // Get clientId from localStorage
+
+                if (!clientId) {
+                    alert("You need to log in first.");
+                    window.location.href = "login.html"; // Redirect to login if no clientId
+                    return;
+                }
+
+                // Check if the client has an upcoming appointment
+                $.ajax({
+                    url: `https://localhost:7206/api/Booking/CheckAppointment/${clientId}`,
+                    method: 'POST',
+                    success: function (response) {
+                        if (response.message === "Upcoming appointment detected.") {
+                            // Show the modal if an upcoming appointment is detected
+                            showModal();
+                        } else {
+                            // Proceed with booking if no appointment is found
+                            alert("You don't have any upcoming appointment. Proceeding with booking.");
+                            submitBooking(clientId); // Call function to submit booking
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 400) {
+                            alert("You have an upcoming appointment. You cannot book another session at the moment.");
+                        } else {
+                            alert("An error occurred while checking your appointment status. Please try again.");
+                        }
+                    }
+                });
+            });
+        });
+
+        // Show the modal
+        function showModal() {
+            $('.modal-container').addClass('active');
+        }
+
+        // Close the modal
+        $('.modal-overlay, .close-btn').on('click', function() {
+            $('.modal-container').removeClass('active');
+        });
+
+        // Confirm the booking (when 'Yes' is clicked)
+        $('#confirmBooking').on('click', function() {
+            const clientId = localStorage.getItem('clientId');
+            submitBooking(clientId); // Call function to submit booking
+            $('.modal-container').removeClass('active'); // Close the modal
+        });
+
+        // Submit the booking if the client doesn't have an upcoming appointment
+        function submitBooking(clientId) {
+            const therapist = $('#therapist').val();
+            const appointmentDate = $('#date').val() + "T" + new Date().toISOString().split("T")[1]; // Combine date with time
+            const appointmentSession = $('#preferred-session').val();
+
+            const bookingData = {
+                clientId: clientId,
+                therapist: therapist,
+                appointmentDate: appointmentDate,
+                appointmentSession: appointmentSession
+            };
+
+            $.ajax({
+                url: 'https://localhost:7206/api/Booking/SubmitBooking', // Your submit endpoint
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(bookingData), // Send the booking data as JSON
+                success: function (response) {
+                    alert("Booking submitted successfully!");
+                    window.location.href = "already.html"; // Redirect to confirmation page
+                },
+                error: function (xhr) {
+                    alert("Failed to submit booking. Please try again.");
+                    console.error('Error:', xhr);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
