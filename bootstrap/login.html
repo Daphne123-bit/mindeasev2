@@ -32,12 +32,15 @@
                 success: function (response, status, xhr) {
                     // Handle success (status 200)
                     if (xhr.status === 200) {
-                        alert("Login Successfully.");
+                        if (response.message === "Admin login Successfully.") {
+                            alert(response.message);
+                            window.location.href = "adminappoint.html"; // Redirect to admin appointments page
+                        } else if (response.clientId) {
+                            alert("Login Successfully.");
 
-                        // Store clientId in localStorage for use in future requests
-                        if (response.clientId) {
+                            // Store clientId in localStorage for use in future requests
                             localStorage.setItem('clientId', response.clientId);
-                            window.location.href = "already.html"; // Redirect to dashboard
+                            window.location.href = "already.html"; // Redirect to client dashboard
                         } else {
                             alert("Client ID is missing from the response.");
                         }
@@ -52,6 +55,8 @@
                             alert("Wrong Password.");
                         } else if (responseMessage === "This username does not exist.") {
                             alert("This username does not exist.");
+                        } else if (responseMessage === "Admin wrong Password.") {
+                            alert("Admin wrong Password.");
                         } else {
                             alert("Bad request. Please check your input."); // Fallback for 400 errors
                         }
